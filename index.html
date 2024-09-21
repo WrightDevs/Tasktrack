@@ -1,0 +1,177 @@
+
+</html><!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Task Track</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f4f8; 
+      color: #333; 
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h2 {
+      color: hsl(200, 100%, 40%); 
+      margin-top: 20px;
+    }
+
+    #subtitle {
+      font-size: 1.2em;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    #introduce {
+      margin-bottom: 20px; 
+      width :20em;
+      display: flex;
+      text-align: center ;
+      justify-content: center ;
+      align-items: center 
+    }
+
+    button {
+      background-color: #007bff;
+      color: #fff; 
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: hsl(200, 100%, 70%);
+    }
+
+    img {
+      margin-bottom: 20px;
+    }
+    .faq-section {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.faq-section h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.faq-section p {
+    text-align: center;
+    color: #555;
+}
+
+.faq-item {
+    margin: 10px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.faq-question {
+    width: 100%;
+    padding: 15px;
+    text-align: left;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.faq-question:hover {
+    background: #0056b3;
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    padding: 0 15px;
+}
+
+.faq-answer p {
+    padding: 15px 0;
+    color: #444;
+}
+  </style>
+</head>
+
+<body>
+  <img src="premium_photo-1681487870238-4a2dfddc6bcb.png" alt="Task Track Logo" width="300">
+  <h2>Task Track</h2>
+  <p id="subtitle">Your simple and effective to-do list.</p>
+  <p id="introduce">Stay organized and boost your productivity with ease. Create, manage, and check off your tasks in a user-friendly space.</p>
+  <br>
+  <p id="start">Start by adding your first task✅✅</p>
+  <a href="index.html">
+  <button id="addTaskButton">Add Task</button>
+  </a>
+<div class="faq-section">
+    <h2>Frequently Asked Questions</h2>
+    <p>Find quick answers to common questions about Task Track.</p>
+
+    <div class="faq-item">
+        <button class="faq-question">1. How do I add a new task?</button>
+        <div class="faq-answer">
+            <p>Click on the “Add Task” button on the homepage. A pop-up form will appear where you can enter task details, set a due date, and add notes.</p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question">2. Can I set reminders for tasks?</button>
+        <div class="faq-answer">
+            <p>Yes, you can set reminders for each task by selecting the reminder option when creating or editing a task. You’ll receive notifications based on your chosen time.</p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question">3. How do I edit or delete a task?</button>
+        <div class="faq-answer">
+            <p>To edit a task, tap on the task name and select “Edit.” For deletion, swipe left on the task and tap the delete icon.</p>
+        </div>
+    </div>
+
+    <!-- Add more FAQ items here -->
+
+    <div class="faq-item">
+        <button class="faq-question">4. Still need help?</button>
+        <div class="faq-answer">
+            <p>If you didn’t find the answer you were looking for, contact us at <a href="mailto:support@tasktrack.com">support@tasktrack.com</a> or visit our Help Center.</p>
+        </div>
+    </div>
+</div>
+<script>
+ document.querySelectorAll('.faq-question').forEach(button => {
+    button.addEventListener('click', () => {
+        const answer = button.nextElementSibling;
+
+        // Toggle the active state
+        button.classList.toggle('active');
+
+        // Adjust max-height for the answer panel
+        if (answer.style.maxHeight) {
+            answer.style.maxHeight = null;
+        } else {
+            answer.style.maxHeight = answer.scrollHeight + 'px';
+        }
+    });
+});
+</script>
+</body>
+
+</html>

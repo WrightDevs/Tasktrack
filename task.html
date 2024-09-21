@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Track</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h2 id="title">Task Track</h2>
+
+  <!-- Task List -->
+  <ul class="task-list"></ul>
+
+  <!-- Add Task Button -->
+  <p id="add">+</p>
+
+  <!-- Modal for Adding Task -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h3>Add a New Task</h3>
+      <input type="text" id="taskInput" placeholder="Enter your task">
+      <button id="addTaskBtn">Add Task</button>
+    </div>
+  </div>
+<footer class="footer">
+  <p>&copy; Ndubuisi Righteous</p>
+</footer>
+  <!-- Modal for PIN Entry -->
+  <div id="pinModal" class="modal">
+    <div class="modal-content">
+      <h3 id="pinModalTitle">Set Your PIN</h3>
+      <input type="password" id="pinInput" placeholder="Enter PIN">
+      <input type="password" id="confirmPinInput" placeholder="Confirm PIN" style="display: none;">
+      <input type="text" id="securityQuestion" placeholder="Set a recovery question" style="display: none;">
+      <input type="text" id="securityAnswer" placeholder="Answer to recovery question" style="display: none;">
+      <button id="pinSubmitBtn">Submit</button>
+      <button id="forgotPinBtn" style="display: none;">Forgot PIN?</button>
+    </div>
+  </div>
+
+  <!-- Modal for Recovery Question -->
+  <div id="recoveryModal" class="modal">
+    <div class="modal-content">
+      <h3>Recover Your PIN</h3>
+      <p id="recoveryQuestion"></p>
+      <input type="text" id="recoveryAnswerInput" placeholder="Enter your answer">
+      <button id="recoverySubmitBtn">Submit</button>
+    </div>
+  </div>
+
+  <script>
+    // Check if a PIN and recovery question already exist in local storage
+    const savedPin = localStorage.getItem('pin');
+    const savedQuestion = localStorage.getItem('securityQuestion');
+    const savedAnswer = localStorage.getItem('securityAnswer');
+
+    // Show PIN modal on page load
+    window.onload = () => {
+      document.getElementById('pinModal').style.display = 'block';
+
+      // If a PIN exists, prompt for entry; otherwise, prompt to set a new PIN and security question
+      if (savedPin) {
+        document.getElementById('pinModalTitle').textContent = 'Enter PIN to Access the List';
+        document.getElementById('confirmPinInput').style.display = 'none';
+        document.getElementById('securityQuestion').style.display = 'none';
+        document.getElementById('securityAnswer').style.display = 'none';
+        document.getElementById('forgotPinBtn').style.display = 'block';
+      } else {
+        document.getElementById('pinModalTitle').textContent = 'Set Your PIN';
+        document.getElementById('confirmPinInput').style.display = 'block';
+        document.getElementById('securityQuestion').style.display = 'block';
+        document.getElementById('securityAnswer').style.display = 'block';
+        document.getElementById('forgotPinBtn').style.display = 'none';
+      }
+    };
+
+    // Check or set PIN
+    document.getElementById('pinSubmitBtn').addEventListener('click', () => {
+      const pinInput = document.getElementById('pinInput').value;
+      const confirmPinInput = document.getElementById('confirmPinInput').value;
+      const securityQuestion = document.getElementById('securityQuestion').value;
+      const securityAnswer = document.getElementById('securityAnswer').value;
+
+      if (savedPin) {
+        // If PIN exists, validate entry
+        if (pinInput === savedPin) {
+          document.getElementById('pinModal').style.display = 'none';
+          loadTasks();
+        } else {
+          alert('Incorrect PIN. Please try again.');
+        }
+      } else {
+        // Set new PIN, confirm, and set a recovery question and answer
+        if (pinInput && pinInput === confirmPinInput && securityQuestion && securityAnswer) {
+          localStorage.setItem('pin', pinInput);
+          localStorage.setItem('securityQuestion', securityQuestion);
+          localStorage.setItem('securityAnswer', securityAnswer.toLowerCase());
+          alert('PIN and recovery question set successfully!');
+          document.getElementById('pinModal').style.display = 'none';
+          loadTasks();
+        } else {
+          alert('Please ensure PINs match and recovery question is set.');
+        }
+      }
+    });
+
+    // Forgot PIN handler
+    document.getElementById('forgotPinBtn').addEventListener('click', () => {
+      document.getElementById('pinModal').style.display = 'none';
+      document.getElementById('recoveryModal').style.display = 'block';
+      document.getElementById('recoveryQuestion').textContent = savedQuestion;
+    });
+
+    // Recovery submit handler
+    document.getElementById('recoverySubmitBtn').addEventListener('click', () => {
+      const recoveryAnswerInput = document.getElementById('recoveryAnswerInput').value.toLowerCase();
+
+      if (recoveryAnswerInput === savedAnswer) {
+        alert(`Your PIN is: ${savedPin}`);
+        document.getElementById('recoveryModal').style.display = 'none';
+        document.getElementById('pinModal').style.display = 'block';
+      } else {
+        alert('Incorrect answer. Please try again.');
+      }
+    });
+
+    // Open add task modal
+    document.getElementById('add').addEventListener('click', () => {
+      document.getElementById('modal').style.display = 'block';
+    });
+
+    // Close add task modal
+    document.querySelector('.close-btn').addEventListener('click', () => {
+      document.getElementById('modal').style.display = 'none';
+    });
+
+    // Add new task
+    document.getElementById('addTaskBtn').addEventListener('click', () => {
+      const taskName = document.getElementById('taskInput').value.trim();
+
+      if (taskName) {
+        addTask(taskName);
+        saveTasks();
+        document.getElementById('taskInput').value = '';
+        document.getElementById('modal').style.display = 'none';
+      }
+    });
+
+    // Close the modal if clicked outside
+    window.addEventListener('click', (event) => {
+      if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+      }
+    });
+
+    // Add task to DOM
+    function addTask(taskName, checked = false) {
+      const li = document.createElement('li');
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.checked = checked;
+
+      const label = document.createElement('label');
+      label.textContent = taskName;
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = 'Delete';
+      deleteBtn.className = 'delete-btn';
+
+      // Append elements to list item
+      li.append(checkbox, label, deleteBtn);
+      document.querySelector('.task-list').appendChild(li);
+
+      // Add event listeners
+      deleteBtn.addEventListener('click', () => {
+        li.remove();
+        saveTasks();
+      });
+
+      checkbox.addEventListener('change', saveTasks);
+    }
+
+    // Save tasks to local storage
+    function saveTasks() {
+      const tasks = Array.from(document.querySelectorAll('.task-list li')).map(li => ({
+        name: li.querySelector('label').textContent,
+        checked: li.querySelector('input[type="checkbox"]').checked
+      }));
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    // Load tasks from local storage
+    function loadTasks() {
+      const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+      tasks.forEach(task => addTask(task.name, task.checked));
+    }
+  </script>
+</body>
+
+</html>
